@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2019-2020 INFN
 # SPDX-License-Identifier: EUPL-1.2
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 
 project(triangoli)
 
