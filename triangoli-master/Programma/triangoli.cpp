@@ -4,11 +4,11 @@
 #include<sstream>
 #include"triangoli.h"
 
-//METODI
+//COSTRUTTORE DELLA CLASSE
 
-Triangoli::Triangoli(std::vector <double> L, bool x) {
+Triangoli::Triangoli(std::vector <double> L, bool x) { 	//x controlla che disuguaglianza triangolare sia rispettata 
 	if(x) {
-		for (int i=0; i<2;  i++)
+		for (int i=0; i<2;  i++) 		//ordine decrescente
 			for (int j=i+1;  j<3;  j++)
 				if (L[j] > L[i])
 					std::swap(L[i],L[j]);
@@ -16,8 +16,10 @@ Triangoli::Triangoli(std::vector <double> L, bool x) {
 			l.push_back(L[i]);
 	}
 	else
-		L.~vector();
+		L.~vector();	//se il costruttore viene chiamato erroneamente L viene ripulito
 }
+
+//METODI DELLA CLASSE
 
 std::vector<std::vector<double>> Triangoli::coord(std::vector <double> h, std::vector <double> a) {
 		std::vector<std::vector<double>> coordinate{
@@ -37,7 +39,7 @@ double Triangoli::perimetro() {
 double Triangoli::area(double P) {
 	double A, p;
 	p = P/2;
-	A = sqrt(p*(p-l[0])*(p-l[1])*(p-l[2]));
+	A = sqrt(p*(p-l[0])*(p-l[1])*(p-l[2]));		//formula di Erone
 	std::cout<<"L'Area del triangolo è"<<'\t'<<A<<std::endl<<std::endl;
 	return A;
 }
@@ -54,7 +56,7 @@ std::vector <double> Triangoli::angoli() {
 			z=i+2;
 		else
 			z=i-1;
-	  	a.push_back(acos((-pow(l[i],2)+pow(l[y],2)+pow(l[z],2))/(2*l[y]*l[z])));
+	  	a.push_back(acos((-pow(l[i],2)+pow(l[y],2)+pow(l[z],2))/(2*l[y]*l[z])));	//teorema del coseno
 		std::cout<<"L'angolo opposto a "<<l[i]<<"\tè di "<<a[i]*180/M_PI<<"\tgradi"<<std::endl;
 	}
 	std::cout<<std::endl;
@@ -130,17 +132,17 @@ std::vector<std::vector<double>> Triangoli::coord_not(std::vector<std::vector<do
 
 void Triangoli::disegnetto (std::vector<std::vector<double>> coordinate,std::vector<std::vector<double>> punti_notevoli){
 	char k;
-	double xmin, xmax, ymin /*= - punti_notevoli[2][2]*/, ymax;
+	double xmin, xmax, ymin , ymax;
 	std::stringstream commandsToTerminal;
 	commandsToTerminal << "gnuplot -p -e \" set title \'Triangolo\'; "
-			<< "set grid; "
-			<< "set size ratio -1; "
-			<< "set key off; "
+			<< "set grid; "			//sì griglia
+			<< "set size ratio -1; "	//proporzioni delle tacche x-y 1:1
+			<< "set key off; "		//no legenda
 			<< "set xrange [-0.5:" << coordinate[1][0] + 0.5 << "]; "
 			<< "set yrange [-0.5:" << coordinate[2][1] + 0.5 << "]; "
 			<< "set object 1 polygon from "<<coordinate[0][0]<<","<<coordinate[0][1]<<" to "<<coordinate[1][0]<<","<<coordinate[1][1]<<" to "<<coordinate[2][0]<<","<<coordinate[2][1]<<" to "<<coordinate[0][0]<<","<<coordinate[0][1]<<"; "
  			<< "set object 1 fc rgb "<<"\'cyan\'"<<" fillstyle solid 1.0 border lt -1; "
-			<< "plot sqrt(-1)\" ";
+			<< "plot sqrt(-1)\" ";		//non visualizzabile
 	system(commandsToTerminal.str().c_str());
 	commandsToTerminal.str(std::string());
 	std::cout<<"Oltre a disegnare il triangolo sono anche in grado di disegnare i punti suoi notevoli, la circonferenza inscritta e quella circoscritta.\n";
@@ -205,7 +207,7 @@ std::vector<double> sinus(double A, double bD, double cD) {
 	double aR = (180-(bD+cD))*(M_PI/180);
 	std::vector<double> l;
 	l.push_back(A);
-	l.push_back((A/sin(aR))*(sin(bD*(M_PI/180))));
+	l.push_back((A/sin(aR))*(sin(bD*(M_PI/180))));	//teorema del seno
 	l.push_back((A/sin(aR))*(sin(cD*(M_PI/180))));
 	return l;
 }
@@ -214,23 +216,23 @@ std::vector<double> carnot(double A, double B, double aD) {
 	std::vector<double> l;
 	l.push_back(A);
 	l.push_back(B);
-	l.push_back(sqrt((A*A)+(B*B)-2*A*B*cos(aD*(M_PI/180))));
+	l.push_back(sqrt((A*A)+(B*B)-2*A*B*cos(aD*(M_PI/180))));	//teorema del coseno
 	return l;
 }
 
 void conf_lat(std::vector<double> l, bool g) {
 	int q;
-	if (l[0]==l[1] || l[0]==l[2] || l[1]==l[2]) {
+	if (l[0]==l[1] || l[0]==l[2] || l[1]==l[2]) {	//confronto lati
 		if (l[0]==l[1] && l[0]==l[2])
-	    		q=3;
+	    		q=3;			//equilatero
 		else
-	     		q=2;
+	     		q=2;			//isoscele
 	}
-	else q=1;
+	else q=1;				//scaleno
 
 	if(g) {
 		std::cout<<"\nÈ un triangolo ";
-		if( fabs(l[0]-hypot(l[1],l[2]))<1E-9 || fabs(l[1]-hypot(l[0],l[2]))<1E-9 || fabs(l[2]-hypot(l[1],l[0]))<1E-9)
+		if( fabs(l[0]-hypot(l[1],l[2]))<1E-9 || fabs(l[1]-hypot(l[0],l[2]))<1E-9 || fabs(l[2]-hypot(l[1],l[0]))<1E-9)	//non usato == per motivi di precisione dei double
 			std::cout<<"rettangolo ";
 		if (q==3) std::cout<<"equilatero ";
 		else if (q==2) std::cout<<"isoscele ";
@@ -247,11 +249,11 @@ bool dis_tri(std::vector<double> l) {
 		else y=i-2;
 		if (i<1) z=i+2;
 		else z=i-1;
-		if (l[i]<l[y]+l[z] && l[i]>fabs(l[y]-l[z])) {
-			g=true;
+		if (l[i]<l[y]+l[z] && l[i]>fabs(l[y]-l[z])) {	//disuguaglianza triangolare stretta
+			g=true;		//ok triangolo
 		}
 		else
-			g=false;
+			g=false;	//no triangolo
 	}
 	conf_lat (l, g);
 	return g;
@@ -265,6 +267,7 @@ void pulisci_cin (){
 //MAIN
 
 int main() {
+	//dichiarazioni
 	int s, check;
 	bool g;
 	char k,j;
@@ -272,6 +275,7 @@ int main() {
 	std::vector <double> a, h, l;
 	std::vector <std::vector<double>> coordinate, punti_notevoli;
 	
+	//inizio interfaccia con utente
 	std::cout<<"\nCiao, io lavoro con i triangoli!\nIl mio compito è costruire triangoli a partire dai dati che mi fornisci.\n\n";
 	while (true) {
 		std::cout<<"Scegli tu:\n 1_ se vuoi fornirmi i valori dei tre lati digita 1\n 2_ se vuoi fornirmi i valori di un lato e due angoli, digita 2\n 3_ se vuoi fornirmi i valori di due lati e dell'angolo tra essi compreso digita 3\n 4_ se vuoi uscire da questo programma digita 0\n\n";
